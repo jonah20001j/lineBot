@@ -1,0 +1,12 @@
+Flask
+requests
+SQLAlchemy
+gunicorn
+click
+Jinja2
+Werkzeug
+itsdangerous
+certifi
+cryptography
+paramiko
+PyYAML
