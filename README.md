@@ -138,18 +138,13 @@ print(completion.choices[0].message)
 要運行代碼，輸入 `python openai-test.py` 到終端/命令行。
 
 這個 `Chat Completions` 示例展示了我們模型的一個強項：創造能力。用一首格式良好的詩解釋遞歸這個編程概念，這是最好的開發者和最好的詩人都會感到困難的事情。而在這種情況下，`gpt-3.5-turbo` 輕鬆完成了這個任務。
-
-
-
-
-
-
-
+---
 
 ```mermaid
 graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
+    line-.->lineBot;
+    lineBot-.->Flask;
+    Flask-.->chatGPT;
+    chatGPT-->lineBot;
+    lineBot-->line;
 ```
