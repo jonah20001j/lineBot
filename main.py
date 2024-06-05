@@ -30,9 +30,7 @@ def linebot():
             print(msg)                                       # 印出內容
             reply = msg
             response = create_chat_completion(msg)
-
             reply = json.dumps(response, indent=4)
-
 
         else:
             reply = '你傳的不是文字呦～'
