@@ -27,8 +27,7 @@ def linebot():
         print('type:' + type)
         if type == 'text':
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
-            print(msg)                                       # 印出內容
-            reply = msg
+            print('提交給GPT:' + msg)                         # 印出內容
             response = create_chat_completion(msg)
             reply = json.dumps(response, indent=4)
 
