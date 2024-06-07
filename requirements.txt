@@ -10,3 +10,6 @@ certifi
 cryptography
 paramiko
 PyYAML
+openai
+python-dotenv
+line-bot-sdk
