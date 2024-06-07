@@ -13,6 +13,13 @@ print('line_authtoken:' + line_authtoken)
 
 app = Flask(__name__)
 
+@app.route("/test", methods=['GET'])
+def test():
+    return "test"
+
+# 每次重啟服務的時候 記得把 NGROK 的 Forwarding https://a878-125-227-151-121.ngrok-free.app
+# 更新至 lineBot 的 Webhook settings -> Webhook URL
+
 @app.route("/", methods=['POST'])
 def linebot():
     body = request.get_data(as_text=True)                    # 取得收到的訊息內容
@@ -28,11 +35,13 @@ def linebot():
         if type == 'text':
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
             print('提交給GPT:' + msg)                         # 印出內容
-            response = create_chat_completion(msg)
-            reply = json.dumps(response, indent=4)
+            reply = msg
+            # response = create_chat_completion(msg)
+            # reply = json.dumps(response, indent=4)
 
         else:
             reply = '你傳的不是文字呦～'
+
         print(reply)
         line_bot_api.reply_message(tk, TextSendMessage(reply))# 回傳訊息
     except:
