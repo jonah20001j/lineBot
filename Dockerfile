@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 開port
 EXPOSE 5000
 
-# 複製應用程式代碼到容器中
-COPY . .
+# # 複製應用程式代碼到容器中 由 docker-compose volume 進來就不用複製進來
+# COPY . .
 
 # 指定容器啟動命令
 CMD ["python", "main.py"]

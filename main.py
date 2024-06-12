@@ -23,8 +23,10 @@ def test():
 @app.route("/", methods=['POST'])
 def linebot():
     body = request.get_data(as_text=True)                    # 取得收到的訊息內容
+    print(body)
     try:
         json_data = json.loads(body)                         # json 格式化訊息內容
+        print(json_data)
         line_bot_api = LineBotApi(channel_access_token)      # 確認 token 是否正確
         handler = WebhookHandler(line_authtoken)             # 確認 secret 是否正確
         signature = request.headers['X-Line-Signature']      # 加入回傳的 headers
@@ -49,4 +51,4 @@ def linebot():
     return 'OK'                                              # 驗證 Webhook 使用，不能省略
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=5000, debug=True)
