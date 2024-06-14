@@ -6,16 +6,36 @@ from openAItools import create_chat_completion
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
+# from linebot.v3.messaging import MessagingApi
+# from linebot.v3.webhook import WebhookHandler
+# from linebot.v3.messaging.models import TextSendMessage
 from config import channel_access_token, line_authtoken
+from autoMessage import autoMessage
 
 print('channel_access_token:' + channel_access_token)
 print('line_authtoken:' + line_authtoken)
 
 app = Flask(__name__)
 
-@app.route("/test", methods=['GET'])
+userIdList = []
+
+@app.route("/test", methods=['POST'])
 def test():
-    return "test"
+    print('userIdList:' + str(userIdList))
+    if not userIdList:
+        return 'No users to send message', 201
+
+
+    body = request.get_data(as_text=True)                    # 取得收到的訊息內容
+    print("+++" + body)
+    line_bot_api = LineBotApi(channel_access_token)      # 確認 token 是否正確
+    for element in userIdList:
+        line_bot_api.push_message(
+            to=element,
+            messages=[TextSendMessage(text='message')]
+        )
+    return 'Message pushed', 200
+
 
 # 每次重啟服務的時候 記得把 NGROK 的 Forwarding https://a878-125-227-151-121.ngrok-free.app
 # 更新至 lineBot 的 Webhook settings -> Webhook URL
@@ -23,10 +43,15 @@ def test():
 @app.route("/", methods=['POST'])
 def linebot():
     body = request.get_data(as_text=True)                    # 取得收到的訊息內容
-    print(body)
+    print("+++" + body)
     try:
         json_data = json.loads(body)                         # json 格式化訊息內容
+        # 使用 get 方法提取 id，並設置默認值為 None
         print(json_data)
+        userId = json_data.get("events", [{}])[0].get("source", {}).get("userId", None)
+        if userId and userId not in userIdList:
+            userIdList.append(userId)
+
         line_bot_api = LineBotApi(channel_access_token)      # 確認 token 是否正確
         handler = WebhookHandler(line_authtoken)             # 確認 secret 是否正確
         signature = request.headers['X-Line-Signature']      # 加入回傳的 headers
@@ -36,10 +61,10 @@ def linebot():
         print('type:' + type)
         if type == 'text':
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
-            print('提交給GPT:' + msg)                         # 印出內容
             reply = msg
             # response = create_chat_completion(msg)
             # reply = json.dumps(response, indent=4)
+            # autoMessage(line_bot_api, userId)
 
         else:
             reply = '你傳的不是文字呦～'
