@@ -4,6 +4,9 @@ FROM python:3.10.12-alpine as build
 # 設置工作目錄
 WORKDIR /app
 
+# 設置時區
+ENV TZ=Asia/Taipei
+
 # 複製需求文件到容器中
 COPY requirements.txt .
 
